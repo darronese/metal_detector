@@ -1,0 +1,6 @@
+{
+  "type": "module",
+  "dependencies": {
+    "@huggingface/transformers": "^4.3.0"
+  }
+}
