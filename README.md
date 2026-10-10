@@ -10,6 +10,8 @@ Goal was to build something concrete to make sure I really understood autoregres
 
 ## Boring stuff I learned that no-one cares about (copied from `shovel`)
 
+Metal Detector reveals what’s beneath each generated token: the model’s full next-token distribution and how certain it was. Shovel is the follow-up: digging into the runtime that produces those predictions.
+
 ### Logits and Model Outputs
 
 The general process of a autoregressive model looks like this:
