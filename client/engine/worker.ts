@@ -3,7 +3,7 @@ import { loadModel } from "../../src/hood/model";
 import { loadTokenizer, type Tokenizer } from "../../src/hood/tokenizer";
 import { buildPrompt } from "../../src/hood/prompt";
 import { Session } from "../../src/hood/session";
-import type { Device, Request, Response, TokenInfo } from "./messages";
+import type { Device, LoadPrefs, Request, Response, TokenInfo } from "./messages";
 
 // the browser's "backend": runs the engine (src/hood) on a background thread so the page never freezes.
 // it only does browser-specific things: pick a device, and turn messages into engine calls and back
@@ -24,15 +24,21 @@ async function hasWebGPU() {
   return !!gpu && !!(await gpu.requestAdapter());
 }
 
-async function load(modelName: string) {
-  const devices: Device[] = (await hasWebGPU()) ? ["webgpu", "wasm"] : ["wasm"];
+/**
+ * @param modelName - Hugging Face repo id
+ * @param prefs - device/dtype the page asked for (phone -> cpu, or a ?device= / ?dtype= test link)
+ */
+async function load(modelName: string, prefs: LoadPrefs) {
+  // asked for one device: use only that. otherwise GPU first, CPU if the GPU is missing or fails
+  const devices: Device[] = prefs.device ? [prefs.device] : (await hasWebGPU()) ? ["webgpu", "wasm"] : ["wasm"];
+  const dtypeFor = (d: Device) => prefs.dtype ?? DTYPE[d];
   let device = devices[0];
   let model;
   for (device of devices) {
     try {
       model = await loadModel(modelName, {
         device,
-        dtype: DTYPE[device],
+        dtype: dtypeFor(device),
         progress_callback: (info) => {
           if (info.status === "progress") send({ type: "progress", file: info.file, progress: info.progress });
         },
@@ -46,7 +52,7 @@ async function load(modelName: string) {
   tok = await loadTokenizer(modelName);
   session = new Session(model!, tok);
   sent = new Set();
-  send({ type: "ready", device, dtype: DTYPE[device], vocabEntries: tok.vocabEntries });
+  send({ type: "ready", device, dtype: dtypeFor(device), vocabEntries: tok.vocabEntries });
 }
 
 /** info for ids the page hasn't seen yet, so each one crosses the thread boundary once */
@@ -63,7 +69,7 @@ function tokens(ids: Iterable<number>) {
 onmessage = async (e: MessageEvent<Request>) => {
   const msg = e.data;
   try {
-    if (msg.type === "load") await load(msg.modelName);
+    if (msg.type === "load") await load(msg.modelName, msg.prefs);
     else if (msg.type === "start") {
       const input_ids = session.start(buildPrompt(tok, msg.prompt, msg.options));
       send({ type: "prompt", input_ids, tokens: tokens(input_ids) });

@@ -1,4 +1,5 @@
 import { DEFAULT_SYSTEM } from "../../src/hood/prompt";
+import { loadPrefs } from "../loadPrefs";
 import { MODELS } from "../models";
 import { canGenerate, currentStep, MAX_STEPS, selectedColumn, type State } from "../state";
 import { dom } from "./dom";
@@ -42,9 +43,11 @@ function renderModel(s: State) {
   dom.badge.title = device === "webgpu" ? "running on the GPU" : device === "wasm" ? "no usable WebGPU, running on the CPU (wasm)" : "";
 
   // there's no clean way to abort a download in transformers.js, so say how to get out
-  dom.modelHint.textContent = status === "loading"
+  // plus why it's on the CPU (phone) or a forced device/dtype (test link), when that applies
+  const { why } = loadPrefs();
+  dom.modelHint.textContent = (status === "loading"
     ? "Downloading and loading. To cancel, reload the page."
-    : "Downloads the first time you generate, then your browser keeps it.";
+    : "Downloads the first time you generate, then your browser keeps it.") + (why ? ` ${why}` : "");
 
   dom.progress.hidden = !s.progress;
   if (s.progress) {

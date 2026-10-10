@@ -1,4 +1,5 @@
 import { EngineClient } from "./engine/client";
+import { loadPrefs } from "./loadPrefs";
 import {
   beginGenerate, beginLoad, beginPass, createState, needsLoad, receive, select, stopGenerating, viewStep,
   type Run,
@@ -43,7 +44,7 @@ bindEvents({
     // the model picked in step 1 isn't loaded yet: load it, the run starts when it's ready
     if (needsLoad(state, modelId)) {
       beginLoad(state, modelId, { prompt, options });
-      engine.load(modelId);
+      engine.load(modelId, loadPrefs().prefs);
       render(state);
     } else startRun({ prompt, options });
   },
