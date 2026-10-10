@@ -1,5 +1,5 @@
 import type { Step } from "../engine/messages";
-import { esc, fmt, heat, pct, tokenText, tokenTitle, type Tokens } from "./format";
+import { esc, fmt, heat, pct, plainText, tokenText, tokenTitle, type Tokens } from "./format";
 
 // pure html builders: data in, markup out. no DOM access, no state: view.ts decides where the markup goes
 
@@ -193,4 +193,25 @@ export function overviewTip(s: Step, tokens: Tokens) {
       <dt>entropy</dt><dd>${entropy(s).toFixed(2)} nats</dd>
       <dt>p(stop)</dt><dd>${pct(s.pStop)}</dd>
     </dl>`;
+}
+
+/** every generated id of a finished run: what the last pass had, plus the token it appended */
+export const generatedIds = (last: Step, promptLength: number) => [...last.input_ids.slice(promptLength), last.winner];
+
+/**
+ * the whole answer as readable text, whichever pass is being viewed
+ *
+ * @param steps - every pass of the run
+ * @param promptLength - how many input_ids were the prompt
+ * @param maxSteps - the pass limit, to say why it ended
+ */
+export function finalOutput(steps: Step[], promptLength: number, tokens: Tokens, maxSteps: number) {
+  const last = steps.at(-1);
+  if (!last) return "";
+  const text = plainText(generatedIds(last, promptLength), tokens);
+  const why = last.eos ? "ended with a stop token"
+    : steps.length >= maxSteps ? `hit the ${maxSteps}-pass limit`
+    : "stopped before the model finished";
+  return `<p class="final-text">${text.trim() ? esc(text) : `<span class="muted">(only special tokens)</span>`}</p>
+    <p class="final-meta">${steps.length} tokens · ${why}</p>`;
 }

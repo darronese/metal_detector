@@ -5,7 +5,7 @@ import {
   type Run,
 } from "./state";
 import { bindEvents } from "./ui/events";
-import { initView, render, setShowProb, setTemplateEnabled, showOverviewTip } from "./ui/view";
+import { copyFinalOutput, initView, render, setShowProb, setTemplateEnabled, showOverviewTip } from "./ui/view";
 
 // entry point: connects the three parts and nothing else
 //   ui/events  --intent-->  state  --render-->  ui/view
@@ -55,6 +55,7 @@ bindEvents({
   shift: (delta) => move(state.view + delta),
   jump: (to) => move(to === "first" ? 0 : state.steps.length - 1),
   modelChanged: () => render(state),
+  copy: () => copyFinalOutput(state),
   hover: (index) => showOverviewTip(state, index),
   showProb: setShowProb,
   template: setTemplateEnabled,

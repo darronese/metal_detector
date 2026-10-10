@@ -28,6 +28,8 @@ export const dom = {
   scrubLabel: $("scrub-label"),
   showProb: $<HTMLInputElement>("show-prob"),
   output: $("output"),
+  final: $("final"),
+  copy: $<HTMLButtonElement>("copy"),
   status: $("status"),
   explore: $("explore"),
   exploreIntro: $("explore-intro"),

@@ -298,7 +298,14 @@ main { padding: 20px 24px 40px; display: grid; gap: 28px; }
 .scrub input { flex: 1; accent-color: var(--accent); padding: 0; }
 .toggle { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted); cursor: pointer; }
 .toggle input { accent-color: var(--accent); }
-.output h2 { margin: 0 0 8px; font-size: 13px; }
+.output h2, .final h2 { margin: 0 0 8px; font-size: 13px; }
+/* final output: the answer itself, as readable as the page gets */
+.final { padding: 14px 16px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+.final h2 { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; }
+.final h2 .hint { font-weight: 400; color: var(--muted); font-size: 12px; }
+.final .copy { margin-left: auto; padding: 4px 12px; font-size: 12px; font-weight: 400; }
+.final-text { margin: 0; white-space: pre-wrap; font-size: 16px; line-height: 1.6; overflow-wrap: anywhere; }
+.final-meta { margin: 8px 0 0; font: 11px var(--mono); color: var(--muted); }
 .output h2 .hint { font-weight: 400; color: var(--muted); font-size: 12px; margin-left: 8px; }
 #output {
   padding: 12px 16px; min-height: 52px;

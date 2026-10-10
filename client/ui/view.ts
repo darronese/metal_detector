@@ -3,7 +3,8 @@ import { loadPrefs } from "../loadPrefs";
 import { MODELS } from "../models";
 import { canGenerate, currentStep, MAX_STEPS, selectedColumn, type State } from "../state";
 import { dom } from "./dom";
-import { after, before, generated, generating, inspector, logits, overview, overviewTip } from "./templates";
+import { plainText } from "./format";
+import { after, before, finalOutput, generated, generatedIds, generating, inspector, logits, overview, overviewTip } from "./templates";
 
 // state -> screen. reads State, writes the DOM, never changes State
 
@@ -73,6 +74,8 @@ function renderBoard(s: State, enter: boolean) {
     dom.scroller.innerHTML = generating(s.steps.length, MAX_STEPS, s.promptIds.length);
     dom.inspector.innerHTML = `<p class="muted">Available once the run is over.</p>`;
     dom.output.innerHTML = `<p class="muted">Generating… the text appears when the run is over.</p>`;
+    dom.final.innerHTML = `<p class="muted">Generating… the answer appears when the run is over.</p>`;
+    dom.copy.disabled = true;
     return;
   }
   const step = currentStep(s);
@@ -85,6 +88,8 @@ function renderBoard(s: State, enter: boolean) {
     : before(ids, s.tokens, sel, !step) + (step ? logits(step, s.tokens, sel, enter) + after(step, s.tokens, sel, enter) : "");
   dom.inspector.innerHTML = inspector(step, s.tokens, sel);
   dom.output.innerHTML = generated(step, s.promptIds.length, s.tokens, enter);
+  dom.final.innerHTML = finalOutput(s.steps, s.promptIds.length, s.tokens, MAX_STEPS);
+  dom.copy.disabled = !s.steps.length;
 }
 
 function renderTimeline(s: State) {
@@ -137,4 +142,22 @@ export function showOverviewTip(s: State, index: number | null) {
   const left = col.left + col.width / 2 - box.left - tip.offsetWidth / 2;
   tip.style.left = `${Math.max(8, Math.min(box.width - tip.offsetWidth - 8, left))}px`;
   tip.style.top = `${col.top - box.top - tip.offsetHeight - 6}px`;
+}
+
+/**
+ * copy the final output as plain text; the button says whether it worked
+ *
+ * @param s - state, for the finished run
+ */
+export async function copyFinalOutput(s: State) {
+  const last = s.steps.at(-1);
+  if (!last) return;
+  try {
+    await navigator.clipboard.writeText(plainText(generatedIds(last, s.promptIds.length), s.tokens).trim());
+    dom.copy.textContent = "Copied";
+  } catch {
+    // clipboard needs https (or localhost) and permission
+    dom.copy.textContent = "Couldn't copy";
+  }
+  setTimeout(() => dom.copy.textContent = "Copy", 1500);
 }

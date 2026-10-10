@@ -13,6 +13,7 @@ export type Handlers = {
   shift: (delta: number) => boolean
   jump: (to: "first" | "last") => boolean
   modelChanged: () => void
+  copy: () => void
   // overview column under the pointer
   hover: (index: number | null) => void
   showProb: (on: boolean) => void
@@ -39,6 +40,7 @@ export function bindEvents(h: Handlers) {
   dom.showProb.onchange = () => h.showProb(dom.showProb.checked);
   dom.template.onchange = () => h.template(dom.template.checked);
   dom.model.onchange = () => h.modelChanged();
+  dom.copy.onclick = () => h.copy();
 
   // board cell -> inspect its column; generated chip or overview column -> jump to that pass
   const onNumber = (key: "col" | "step", act: (n: number) => void) => (e: Event) => {

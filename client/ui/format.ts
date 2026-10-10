@@ -24,3 +24,14 @@ export function tokenTitle(id: number, info: TokenInfo | undefined) {
 
 /** 0..1 brightness for a probability, log scale: 1e-6 -> 0, 1 -> 1 */
 export const heat = (p: number) => Math.max(0, Math.min(1, 1 + Math.log10(Math.max(p, 1e-12)) / 6));
+
+/**
+ * the generated tokens as plain text, special tokens (like the stop token) left out.
+ * joins each token's own decode: a character split across two tokens (some emoji, CJK) can show as �
+ *
+ * @param ids - generated token ids, in order
+ * @param tokens - token info the worker has sent
+ */
+export function plainText(ids: number[], tokens: Tokens): string {
+  return ids.map(id => tokens.get(id)).filter(info => info && !info.special).map(info => info!.text).join("");
+}
