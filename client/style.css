@@ -70,15 +70,16 @@ button, input, textarea, select { font: inherit; color: inherit; }
 .brand h1 { margin: 0; font: 600 17px/1 var(--mono); letter-spacing: -0.02em; }
 .tagline { color: var(--muted); font-size: 13px; }
 /* min-width: 0, or the bar refuses to be narrower than the select's longest option and pushes Load off-screen */
-.loader { display: flex; align-items: center; gap: 8px; margin-left: auto; flex: 1 1 360px; max-width: 620px; min-width: 0; }
-.loader select { flex: 1; min-width: 0; font-size: 13px; }
+/* wraps so a long badge drops under the dropdown instead of widening the page */
+.loader { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; max-width: 620px; min-width: 0; }
+.loader select { flex: 1 1 260px; min-width: 0; font-size: 13px; }
 .badge {
-  padding: 3px 9px; border-radius: 99px; white-space: nowrap;
+  padding: 3px 9px; border-radius: 99px; max-width: 100%;
   font: 12px var(--mono); color: var(--muted); border: 1px solid var(--line);
 }
 .badge.webgpu { color: var(--accent); border-color: currentColor; }
 .badge.wasm { color: var(--heat); border-color: currentColor; }
-.progress { position: relative; flex-basis: 100%; height: 18px; border-radius: 4px; background: var(--cell); overflow: hidden; }
+.progress { position: relative; max-width: 620px; height: 18px; border-radius: 4px; background: var(--cell); overflow: hidden; }
 .progress .fill { position: absolute; inset: 0 auto 0 0; background: var(--accent-soft); border-right: 2px solid var(--accent); transition: width 120ms; }
 .progress .file { position: relative; padding: 0 8px; font: 11px/18px var(--mono); color: var(--muted); }
 
@@ -94,7 +95,19 @@ button:hover:not(:disabled) { border-color: var(--muted); }
 button:disabled { opacity: 0.45; cursor: default; }
 button.primary { background: var(--accent); border-color: var(--accent); color: var(--bg); font-weight: 600; }
 
-main { padding: 20px 24px 40px; display: grid; gap: 20px; }
+main { padding: 20px 24px 40px; display: grid; gap: 28px; }
+
+/* ---------- the three steps: model -> prompt -> explore ---------- */
+.step { display: grid; gap: 10px; }
+.step-title { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 15px; font-weight: 600; }
+.step-title .num {
+  display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%;
+  background: var(--accent); color: var(--bg); font: 600 12px var(--mono);
+}
+.step-hint { margin: 0; font-size: 12.5px; color: var(--muted); max-width: 640px; }
+.explore { display: grid; gap: 20px; }
+/* display: grid would override the hidden attribute */
+.explore[hidden] { display: none; }
 
 /* ---------- prompt ---------- */
 .prompt { display: flex; gap: 12px; align-items: stretch; flex-wrap: wrap; }
@@ -320,8 +333,6 @@ main { padding: 20px 24px 40px; display: grid; gap: 20px; }
 @media (max-width: 560px) {
   .topbar, main { padding-left: 16px; padding-right: 16px; }
   .controls { flex-wrap: wrap; }
-  /* model bar gets its own full row under the title */
-  .loader { flex-basis: 100%; margin-left: 0; }
   /* overview: narrower captions, taller strips, and the scale line dropped (the hover card has exact values) */
   .overview { --ov-h: 40px; }
   .ov { grid-template-columns: 132px minmax(0, 1fr); }

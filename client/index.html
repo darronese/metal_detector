@@ -12,60 +12,76 @@
       <h1>metal_detector</h1>
       <span class="tagline">logits, one forward pass at a time</span>
     </div>
-    <div class="loader">
-      <select id="model" aria-label="model"></select>
-      <button id="load">Load</button>
-      <span id="badge" class="badge">not loaded</span>
-    </div>
-    <div id="progress" class="progress" hidden><div class="fill"></div><span class="file"></span></div>
   </header>
 
   <main>
-    <section class="prompt">
-      <div class="prompt-fields">
-        <textarea id="prompt" rows="2" aria-label="prompt">what is 6 + 7</textarea>
-        <div class="prompt-options">
-          <label class="toggle"><input id="template" type="checkbox" checked> chat template</label>
-          <input id="system" aria-label="system message" placeholder="system message (empty = none)" spellcheck="false">
+    <section class="step">
+      <h2 class="step-title"><span class="num">1</span> Choose a model</h2>
+      <div class="loader">
+        <select id="model" aria-label="model"></select>
+        <span id="badge" class="badge">not loaded</span>
+      </div>
+      <p id="model-hint" class="step-hint"></p>
+      <div id="progress" class="progress" hidden><div class="fill"></div><span class="file"></span></div>
+    </section>
+
+    <section class="step">
+      <h2 class="step-title"><span class="num">2</span> Ask something</h2>
+      <div class="prompt">
+        <div class="prompt-fields">
+          <textarea id="prompt" rows="2" aria-label="prompt">what is 6 + 7</textarea>
+          <div class="prompt-options">
+            <label class="toggle"><input id="template" type="checkbox" checked> chat template</label>
+            <input id="system" aria-label="system message" placeholder="system message (empty = none)" spellcheck="false">
+          </div>
+        </div>
+        <div class="controls">
+          <button id="generate" class="primary">Generate</button>
+          <button id="stop" disabled>Stop</button>
         </div>
       </div>
-      <div class="controls">
-        <button id="generate" class="primary" disabled>Generate</button>
-        <button id="stop" disabled>Stop</button>
+      <p id="status" class="status" role="status"></p>
+    </section>
+
+    <section class="step">
+      <h2 class="step-title"><span class="num">3</span> Explore the run</h2>
+      <p id="explore-intro" class="step-hint">
+        After you generate, every forward pass shows up here: the tokens the model was given,
+        the scores it gave every possible next token, and the one it picked.
+      </p>
+
+      <div id="explore" class="explore" hidden>
+        <section class="overview" aria-label="run overview">
+          <h2>run overview <span class="hint">one column per forward pass · hover for values · click to jump</span></h2>
+          <div id="overview"></div>
+          <div id="overview-tip" class="ov-tip" role="tooltip" hidden></div>
+        </section>
+
+        <section class="board">
+          <div id="scroller" class="scroller"></div>
+          <aside id="inspector" class="inspector"></aside>
+        </section>
+
+        <section class="timeline">
+          <div class="nav" role="group" aria-label="step through forward passes">
+            <button id="first" disabled title="first pass (Home)">⏮</button>
+            <button id="prev" disabled title="previous pass (←)">◂ Previous</button>
+            <button id="next" disabled title="next pass (→)">Next ▸</button>
+            <button id="last" disabled title="last pass (End)">⏭</button>
+          </div>
+          <label class="scrub">
+            <span id="scrub-label">no passes yet</span>
+            <input id="scrub" type="range" min="0" max="0" value="0" disabled>
+          </label>
+          <label class="toggle"><input id="show-prob" type="checkbox"> show probabilities instead of logits</label>
+        </section>
+
+        <section class="output">
+          <h2>generated <span class="hint">one chip per token · click one to see the pass that added it</span></h2>
+          <div id="output"></div>
+        </section>
       </div>
     </section>
-
-    <section class="overview" aria-label="run overview">
-      <h2>run overview <span class="hint">one column per forward pass · hover for values · click to jump</span></h2>
-      <div id="overview"></div>
-      <div id="overview-tip" class="ov-tip" role="tooltip" hidden></div>
-    </section>
-
-    <section class="board">
-      <div id="scroller" class="scroller"></div>
-      <aside id="inspector" class="inspector"></aside>
-    </section>
-
-    <section class="timeline">
-      <div class="nav" role="group" aria-label="step through forward passes">
-        <button id="first" disabled title="first pass (Home)">⏮</button>
-        <button id="prev" disabled title="previous pass (←)">◂ Previous</button>
-        <button id="next" disabled title="next pass (→)">Next ▸</button>
-        <button id="last" disabled title="last pass (End)">⏭</button>
-      </div>
-      <label class="scrub">
-        <span id="scrub-label">no passes yet</span>
-        <input id="scrub" type="range" min="0" max="0" value="0" disabled>
-      </label>
-      <label class="toggle"><input id="show-prob" type="checkbox"> show probabilities instead of logits</label>
-    </section>
-
-    <section class="output">
-      <h2>generated <span class="hint">one chip per token · click one to see the pass that added it</span></h2>
-      <div id="output"></div>
-    </section>
-
-    <p id="status" class="status" role="status"></p>
   </main>
 
   <script type="module" src="./main.ts"></script>
