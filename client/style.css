@@ -69,7 +69,8 @@ button, input, textarea, select { font: inherit; color: inherit; }
 .brand { display: flex; align-items: baseline; gap: 12px; }
 .brand h1 { margin: 0; font: 600 17px/1 var(--mono); letter-spacing: -0.02em; }
 .tagline { color: var(--muted); font-size: 13px; }
-.loader { display: flex; align-items: center; gap: 8px; margin-left: auto; flex: 1 1 360px; max-width: 620px; }
+/* min-width: 0, or the bar refuses to be narrower than the select's longest option and pushes Load off-screen */
+.loader { display: flex; align-items: center; gap: 8px; margin-left: auto; flex: 1 1 360px; max-width: 620px; min-width: 0; }
 .loader select { flex: 1; min-width: 0; font-size: 13px; }
 .badge {
   padding: 3px 9px; border-radius: 99px; white-space: nowrap;
@@ -319,4 +320,15 @@ main { padding: 20px 24px 40px; display: grid; gap: 20px; }
 @media (max-width: 560px) {
   .topbar, main { padding-left: 16px; padding-right: 16px; }
   .controls { flex-wrap: wrap; }
+  /* model bar gets its own full row under the title */
+  .loader { flex-basis: 100%; margin-left: 0; }
+  /* overview: narrower captions, taller strips, and the scale line dropped (the hover card has exact values) */
+  .overview { --ov-h: 40px; }
+  .ov { grid-template-columns: 132px minmax(0, 1fr); }
+  .ov-labels small.scale { display: none; }
+  /* board: narrower label column so more positions fit beside it */
+  :root { --label-w: 112px; --cell-w: 64px; }
+  .label.vocab .id { width: 44px; }
+  /* "input_ids[0]" over "shape [1, n]" instead of side by side */
+  .label:not(.vocab):not(.gap-label) { flex-direction: column; align-items: flex-start; justify-content: center; gap: 0; }
 }

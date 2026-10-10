@@ -171,7 +171,7 @@ export function overview(steps: Step[], view: number, running: boolean) {
     { label: 'p(stop)', scale: 'log scale, 1e-6–100%', note: `highest ${pct(steps[hi_stop].p_stop)} · pass ${hi_stop + 1}`, cls: 'stop', h: (s: Step) => heat(s.p_stop) },
   ]
 
-  const labels = strips.map(st => `<div><span>${st.label}</span><small>${st.scale}</small><small class="note">${st.note}</small></div>`).join('')
+  const labels = strips.map(st => `<div><span>${st.label}</span><small class="scale">${st.scale}</small><small class="note">${st.note}</small></div>`).join('')
   const columns = steps.map((s, i) => {
     const aria = `pass ${i + 1}: winner ${pct(winner_p(s))}, entropy ${entropy(s).toFixed(2)} nats, p(stop) ${pct(s.p_stop)}`
     const cells = strips.map(st => `<span class="ov-cell ${st.cls}"><i style="height:${(st.h(s) * 100).toFixed(1)}%"></i></span>`).join('')
