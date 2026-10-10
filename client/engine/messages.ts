@@ -16,8 +16,10 @@ export type LoadPrefs = { device?: Device, dtype?: DataType };
 // page -> worker
 export type Request =
   | { type: "load", modelName: string, prefs: LoadPrefs }
-  | { type: "start", prompt: string, options: PromptOptions }   // build + encode the prompt, no forward pass yet
-  | { type: "step" };                                            // exactly one forward pass
+  // build + encode the prompt, no forward pass yet
+  | { type: "start", prompt: string, options: PromptOptions }
+  // exactly one forward pass
+  | { type: "step" };
 
 // worker -> page
 // tokens: info for every id the message mentions that the page hasn't been sent yet

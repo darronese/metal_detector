@@ -13,13 +13,18 @@ export type State = {
   pending: Run | null
   progress: { file: string, progress: number } | null
   status: string
-  tokens: Map<number, TokenInfo>   // every token id the worker has described so far
+  // every token id the worker has described so far
+  tokens: Map<number, TokenInfo>
   promptIds: number[]
   steps: Step[]
-  view: number                     // index into steps being shown, -1 = prompt only
-  selected: number | null          // clicked column, null = follow the last position
-  busy: boolean                    // waiting on the worker (encode or a forward pass)
-  running: boolean                 // generating: keep asking for passes until a stop token or Stop
+  // index into steps being shown, -1 = prompt only
+  view: number
+  // clicked column, null = follow the last position
+  selected: number | null
+  // waiting on the worker (encode or a forward pass)
+  busy: boolean
+  // generating: keep asking for passes until a stop token or Stop
+  running: boolean
 };
 
 export type Run = { prompt: string, options: PromptOptions };

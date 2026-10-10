@@ -13,7 +13,8 @@ export type Handlers = {
   shift: (delta: number) => boolean
   jump: (to: "first" | "last") => boolean
   modelChanged: () => void
-  hover: (index: number | null) => void   // overview column under the pointer
+  // overview column under the pointer
+  hover: (index: number | null) => void
   showProb: (on: boolean) => void
   template: (on: boolean) => void
 };
