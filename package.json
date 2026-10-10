@@ -2,5 +2,13 @@
   "type": "module",
   "dependencies": {
     "@huggingface/transformers": "^4.3.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  },
+  "scripts": {
+    "start": "tsx src/main.ts",
+    "typecheck": "tsc"
   }
 }
