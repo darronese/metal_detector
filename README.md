@@ -8,7 +8,7 @@ Instead of seeing the final generated text, you can inspect logits produced unde
 
 Goal was to build something concrete to make sure I really understood autoregressive generation by visualizing and architecting the process here, and maybe help other people who don't want to suffer as much
 
-## Boring stuff I learned no-one cares about (copied from `shovel`)
+## Boring stuff I learned that no-one cares about (copied from `shovel`)
 
 ### Logits and Model Outputs
 
