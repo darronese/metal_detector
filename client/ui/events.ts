@@ -18,7 +18,7 @@ export type Handlers = {
 }
 
 export function bindEvents(h: Handlers) {
-  dom.load.onclick = () => h.load(dom.model.value.trim())
+  dom.load.onclick = () => h.load(dom.model.value)
   dom.generate.onclick = () => h.generate(dom.prompt.value, {
     template: dom.template.checked,
     system: dom.system.value.trim(),
@@ -57,7 +57,7 @@ export function bindEvents(h: Handlers) {
 
   // ← / → step through passes, Home / End jump to either end
   document.addEventListener('keydown', (e) => {
-    if (e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLInputElement) return
+    if (e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement) return
     if (e.key === 'ArrowLeft') h.shift(-1)
     else if (e.key === 'ArrowRight') h.shift(1)
     else if (e.key === 'Home') h.jump('first')

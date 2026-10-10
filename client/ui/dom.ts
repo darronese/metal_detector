@@ -7,7 +7,7 @@ const $ = <T extends HTMLElement>(id: string) => {
 }
 
 export const dom = {
-  model: $<HTMLInputElement>('model'),
+  model: $<HTMLSelectElement>('model'),
   load: $<HTMLButtonElement>('load'),
   badge: $('badge'),
   progress: $('progress'),

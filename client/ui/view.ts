@@ -1,4 +1,5 @@
 import { DEFAULT_SYSTEM } from '../../src/hood/prompt'
+import { MODELS } from '../models'
 import { canGenerate, currentStep, MAX_STEPS, selectedColumn, type State } from '../state'
 import { dom } from './dom'
 import { after, before, generated, generating, inspector, logits, overview, overview_tip } from './templates'
@@ -10,6 +11,9 @@ export type RenderOptions = { enter?: boolean, follow?: boolean }
 /** one-time setup of controls that start with a value */
 export function initView() {
   dom.system.value = DEFAULT_SYSTEM
+  // first entry is selected by default: the small one, so a first visit isn't a 786 MB download
+  dom.model.innerHTML = MODELS.map(m =>
+    `<option value="${m.id}">${m.name} · ${m.mb.webgpu} MB · ${m.note}</option>`).join('')
 }
 
 export function render(s: State, { enter = false, follow = false }: RenderOptions = {}) {
@@ -23,7 +27,7 @@ export function render(s: State, { enter = false, follow = false }: RenderOption
 
 function renderHeader(s: State) {
   const { status, device, dtype } = s.model
-  dom.load.disabled = status === 'loading'
+  dom.load.disabled = dom.model.disabled = status === 'loading' || s.running
   dom.badge.className = `badge ${device ?? ''}`
   dom.badge.textContent = status === 'ready' ? `${device} · ${dtype}` : status === 'loading' ? 'loading…' : 'not loaded'
   dom.badge.title = device === 'webgpu' ? 'running on the GPU' : device === 'wasm' ? 'no usable WebGPU, running on the CPU (wasm)' : ''
