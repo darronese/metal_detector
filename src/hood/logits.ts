@@ -4,10 +4,10 @@
  */
 
 // one vocab id and how much the model wanted it
-export type Candidate = { id: number, logit: number, prob: number }
+export type Candidate = { id: number, logit: number, prob: number };
 
 // what one position's row of logits predicts for the NEXT position
-export type Column = { top: Candidate[], entropy: number }
+export type Column = { top: Candidate[], entropy: number };
 
 /**
  * log(sum(exp(row))), the log of softmax's denominator, so any prob is exp(logit - lse)
@@ -17,11 +17,11 @@ export type Column = { top: Candidate[], entropy: number }
  * @returns the log of the softmax denominator
  */
 export function logsumexp(row: Float32Array): number {
-  let max = -Infinity
-  for (const x of row) if (x > max) max = x
-  let sum = 0
-  for (const x of row) sum += Math.exp(x - max)
-  return max + Math.log(sum)
+  let max = -Infinity;
+  for (const x of row) if (x > max) max = x;
+  let sum = 0;
+  for (const x of row) sum += Math.exp(x - max);
+  return max + Math.log(sum);
 }
 
 /**
@@ -33,9 +33,9 @@ export function logsumexp(row: Float32Array): number {
  * @returns total probability of those ids
  */
 export function probability(row: Float32Array, lse: number, ids: Iterable<number>): number {
-  let p = 0
-  for (const id of ids) p += Math.exp(row[id] - lse)
-  return p
+  let p = 0;
+  for (const id of ids) p += Math.exp(row[id] - lse);
+  return p;
 }
 
 /**
@@ -46,23 +46,23 @@ export function probability(row: Float32Array, lse: number, ids: Iterable<number
  * @param k - how many candidates to keep
  * @returns the top k (best first, ties go to the lower id like argmax) and the entropy in nats
  */
-export function summarize_row(row: Float32Array, lse: number, k: number): Column {
-  const top: Candidate[] = []
-  let entropy = 0
+export function summarizeRow(row: Float32Array, lse: number, k: number): Column {
+  const top: Candidate[] = [];
+  let entropy = 0;
   for (let id = 0; id < row.length; id++) {
-    const logit = row[id]
-    const logp = logit - lse
-    const prob = Math.exp(logp)
+    const logit = row[id];
+    const logp = logit - lse;
+    const prob = Math.exp(logp);
     // prob underflows to 0 for very unlikely ids, and 0 * log(0) would be NaN
-    if (prob > 0) entropy -= prob * logp
+    if (prob > 0) entropy -= prob * logp;
 
     // keep top sorted descending; only touch it when this logit beats the current k-th
     if (top.length < k || logit > top[top.length - 1].logit) {
-      let i = top.length
-      while (i > 0 && top[i - 1].logit < logit) i--
-      top.splice(i, 0, { id, logit, prob })
-      if (top.length > k) top.pop()
+      let i = top.length;
+      while (i > 0 && top[i - 1].logit < logit) i--;
+      top.splice(i, 0, { id, logit, prob });
+      if (top.length > k) top.pop();
     }
   }
-  return { top, entropy }
+  return { top, entropy };
 }
