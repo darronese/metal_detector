@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>metal_detector</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <h1>metal_detector</h1>
+      <span class="tagline">logits, one forward pass at a time</span>
+    </div>
+    <div class="loader">
+      <input id="model" value="onnx-community/Qwen2.5-0.5B-Instruct" spellcheck="false" aria-label="model id">
+      <button id="load">Load</button>
+      <span id="badge" class="badge">not loaded</span>
+    </div>
+    <div id="progress" class="progress" hidden><div class="fill"></div><span class="file"></span></div>
+  </header>
+
+  <main>
+    <section class="prompt">
+      <div class="prompt-fields">
+        <textarea id="prompt" rows="2" aria-label="prompt">what is 6 + 7</textarea>
+        <div class="prompt-options">
+          <label class="toggle"><input id="template" type="checkbox" checked> chat template</label>
+          <input id="system" aria-label="system message" placeholder="system message (empty = none)" spellcheck="false">
+        </div>
+      </div>
+      <div class="controls">
+        <button id="generate" class="primary" disabled>Generate</button>
+        <button id="stop" disabled>Stop</button>
+      </div>
+    </section>
+
+    <section class="overview" aria-label="run overview">
+      <h2>run overview <span class="hint">one column per forward pass · hover for values · click to jump</span></h2>
+      <div id="overview"></div>
+      <div id="overview-tip" class="ov-tip" role="tooltip" hidden></div>
+    </section>
+
+    <section class="board">
+      <div id="scroller" class="scroller"></div>
+      <aside id="inspector" class="inspector"></aside>
+    </section>
+
+    <section class="timeline">
+      <div class="nav" role="group" aria-label="step through forward passes">
+        <button id="first" disabled title="first pass (Home)">⏮</button>
+        <button id="prev" disabled title="previous pass (←)">◂ Previous</button>
+        <button id="next" disabled title="next pass (→)">Next ▸</button>
+        <button id="last" disabled title="last pass (End)">⏭</button>
+      </div>
+      <label class="scrub">
+        <span id="scrub-label">no passes yet</span>
+        <input id="scrub" type="range" min="0" max="0" value="0" disabled>
+      </label>
+      <label class="toggle"><input id="show-prob" type="checkbox"> show probabilities instead of logits</label>
+    </section>
+
+    <section class="output">
+      <h2>generated <span class="hint">one chip per token · click one to see the pass that added it</span></h2>
+      <div id="output"></div>
+    </section>
+
+    <p id="status" class="status" role="status"></p>
+  </main>
+
+  <script type="module" src="./main.ts"></script>
+</body>
+</html>
