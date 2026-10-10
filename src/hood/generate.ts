@@ -35,3 +35,16 @@ export async function forward_pass(model: PreTrainedModel, inputs: Inputs): Prom
   inputs.attention_mask = cat([inputs.attention_mask, new_attention_mask_input], 1)
   return { winner: winner.item() as bigint, logits: outputs.logits }
 }
+
+/**
+ * Every token id that means "done". The tokenizer only knows one (eos_token_id), but the model's
+ * generation_config.json can list more: Qwen2.5 ends with <|im_end|> OR <|endoftext|>.
+ * model.generate stops on all of them, so we do too.
+ *
+ * @param model - its generation_config holds the full list
+ * @param eos_token_id - the tokenizer's single eos
+ */
+export function stop_tokens(model: PreTrainedModel, eos_token_id: number): Set<number> {
+  const config = model.generation_config?.eos_token_id ?? []
+  return new Set([eos_token_id, ...(Array.isArray(config) ? config : [config])])
+}
