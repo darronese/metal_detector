@@ -69,6 +69,9 @@ button, input, textarea, select { font: inherit; color: inherit; }
 .brand { display: flex; align-items: baseline; gap: 12px; }
 .brand h1 { margin: 0; font: 600 17px/1 var(--mono); letter-spacing: -0.02em; }
 .tagline { color: var(--muted); font-size: 13px; }
+.site-links { margin-left: auto; display: flex; gap: 4px; }
+.site-links a { display: flex; padding: 6px; border-radius: 6px; color: var(--muted); }
+.site-links a:hover, .site-links a:focus-visible { color: var(--accent); background: var(--accent-soft); }
 /* min-width: 0, or the bar refuses to be narrower than the select's longest option and pushes Load off-screen */
 /* wraps so a long badge drops under the dropdown instead of widening the page */
 .loader { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; max-width: 620px; min-width: 0; }
